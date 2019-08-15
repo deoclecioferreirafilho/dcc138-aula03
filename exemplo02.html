@@ -17,6 +17,7 @@ var larg = canvas.width = 400;
 var alt = canvas.height = 300;
 var dt = 0;
 var anterior = 0;
+var ctx = canvas.getContext("2d");
 
 pc = {};
 
@@ -26,7 +27,34 @@ pc.x = 100;
 pc.vy = 200;
 pc.y = 100;
 
-var ctx = canvas.getContext("2d");
+
+pc.mover = function(dt){
+    this.x = this.x + this.vx * dt;
+    this.y = this.y + this.vy * dt;
+}
+
+pc.mover(dt);
+pc2.mover(dt);
+
+pc.desenhar = desenhaPC;
+
+var pc2 = {
+    x : 50,
+    y : 150,
+    w : 50,
+    vx:0,
+    vy:0,
+    desenhar : desenhaPC,
+    mover = function(dt){
+    this.x = this.x + this.vx * dt;
+    this.y = this.y + this.vy * dt;
+    },
+    perseguir:function(alvo){
+        this.vx = 40 * Math.sign(alvo.x - this.x)
+        this.vy = 40 * Math.sign(alvo.y - this.y)
+    }
+}
+
 
 function TeclaSolta(e){
 
@@ -84,10 +112,11 @@ function desenhaBL(x, y) {
         //ctx.fill();
 }
 
-function desenhaPC(x, y) {
+function desenhaPC(ctx) {
     ctx.fillStyle = "#fff";
     ctx.beginPath();
-    ctx.arc(x, y, pc.w , 0, Math.PI * 2);
+    ctx.arc(this.x, this.y, this.w , 0, Math.PI * 2);
+    //ctx.fillRect(x, y, pc.w, pc.w );
     ctx.fill();
 }
 
@@ -99,15 +128,18 @@ function passo(t){
     ctx.fillText(t, 10, 10);
     ctx.fillText(dt, 10, 20);
 
-    pc.x = pc.x + pc.vx * dt;
-    pc.y = pc.y + pc.vy * dt;
-
-    desenhaPC(pc.x,pc.y);
+    pc2.perseguir = pc;
+    pc.desenhar(dt);
+    pc2.desenhar(dt);
+    
+    //desenhaPC(pc.x,pc.y);
    // desenhaBL(pc.x, pc.y);
    // desenhaOE(pc.x, pc.y);
    // desenhaOD(pc.x, pc.y);
-    desenhaPortais();
+    //desenhaPortais();
     anterior = t;
+
+   pc.mover(dt);
 
    if(pc.x >= larg - pc.w || pc.x <= pc.w)
        pc.vx = -pc.vx;
