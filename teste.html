@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html lang="pt">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Semana 2 Exm2</title>
+</head>
+<body>
+    <h1>Papai</h1>
+    <canvas />
+</body>
+
+<script>
+var canvas = document.querySelector("canvas");
+var larg = canvas.width = 400;
+var alt = canvas.height = 300;
+var dt = 0;
+var anterior = 0;
+var pcw = 30;
+var pcvx = 100;
+var pcx = 100;
+var pcvy = 200;
+var pcy = 100;
+
+var ctx = canvas.getContext("2d");
+
+function TeclaSolta(e){
+
+    if(e.keyCode == 37)
+        //pcvx = 0;
+        requestAnimationFrame(passo);
+    
+    if(e.keyCode == 39)
+        //pcvx = 0;
+        requestAnimationFrame(passo);
+    
+}
+
+function TeclaPressionada(e){
+    console.log(e.keyCode)
+    if(e.keyCode == 37)
+        pcvx = -100;
+    
+    if(e.keyCode == 39)
+        pcvx = 100;
+    
+}
+
+function desenhachao(){
+ctx.fillStyle = "black";
+ctx.fillRect(0,0,larg,alt );
+}
+
+function desenhaPortais(){
+ctx.fillStyle = "blue";
+ctx.fillRect(380,95,20,40 );
+ctx.fillStyle = "red";
+ctx.fillRect(0,95,20,40 );
+}
+
+function desenhaOE(x, y) {
+    ctx.fillStyle = "black";
+    ctx.beginPath();
+    ctx.arc(x - 12, y - 10 , pcw  - 25 , 0, Math.PI * 2);
+    ctx.fill();
+}
+function desenhaOD(x, y) {
+    ctx.fillStyle = "black";
+    ctx.beginPath();
+    ctx.arc(x + 12, y - 10, pcw - 25, 0, Math.PI * 2);
+    ctx.fill();
+}
+function desenhaBL(x, y) {
+        //ctx.strokeStyle = "black";
+        ctx.fillStyle = "black";
+        ctx.lineWidth = 5;
+        ctx.beginPath();
+        ctx.arc(x, y, pcw - 10, 0, Math.PI);
+        ctx.stroke();
+        //ctx.fill();
+}
+
+function desenhaPC(x, y) {
+    ctx.fillStyle = "#fff";
+    ctx.beginPath();
+    ctx.arc(x, y, pcw , 0, Math.PI * 2);
+    ctx.fill();
+}
+
+
+function passo(t){
+    dt = (t - anterior)/1000;
+    desenhachao();
+    ctx.fillStyle = "black";
+    ctx.fillText(t, 10, 10);
+    ctx.fillText(dt, 10, 20);
+
+    pcx = pcx + pcvx * dt;
+    pcy = pcy + pcvy * dt;
+
+    desenhaPC(pcx,pcy);
+    desenhaBL(pcx, pcy);
+    desenhaOE(pcx, pcy);
+    desenhaOD(pcx, pcy);
+    //desenhaPortais();
+    anterior = t;
+
+   if(pcx >= larg - pcw || pcx <= pcw)
+       pcvx = -pcvx;
+
+   if (pcy >= alt - pcw || pcy <= pcw)
+        pcvy = -pcvy;
+
+/*
+   if(pcx >= larg){
+       pcx = 0 - pcw;
+   }else if(pcx <= 0-pcw){
+       pcx = larg
+   }
+*/
+    requestAnimationFrame(passo);
+}
+
+// Programa Principal
+
+addEventListener("keydown", TeclaPressionada);
+addEventListener("keyup", TeclaSolta);
+requestAnimationFrame(passo);
+
+</script>
+</html>
